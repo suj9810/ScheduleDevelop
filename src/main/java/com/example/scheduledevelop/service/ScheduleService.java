@@ -70,4 +70,17 @@ public class ScheduleService {
 
         return new ScheduleResponseDto(findSchedule);
     }
+
+    public void delete(Long id, String password) {
+        Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Does not exist id : " + id));
+
+        Member writer = findSchedule.getMember();
+
+        if (!writer.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+        scheduleRepository.delete(findSchedule);
+    }
 }
