@@ -1,10 +1,9 @@
 package com.example.scheduledevelop.dto;
 
-import com.example.scheduledevelop.entity.BaseEntity;
 import lombok.Getter;
 
 @Getter
-public class CreateScheduleRequestDto extends BaseEntity {
+public class CreateScheduleRequestDto {
 
     private final String title;
 
@@ -17,4 +16,5 @@ public class CreateScheduleRequestDto extends BaseEntity {
         this.contents = contents;
         this.email = email;
     }
+
 }
