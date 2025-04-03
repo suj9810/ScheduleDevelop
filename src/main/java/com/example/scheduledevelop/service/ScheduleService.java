@@ -5,6 +5,7 @@ import com.example.scheduledevelop.entity.Member;
 import com.example.scheduledevelop.entity.Schedule;
 import com.example.scheduledevelop.repository.MemberRepository;
 import com.example.scheduledevelop.repository.ScheduleRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,24 +51,21 @@ public class ScheduleService {
         return new ScheduleResponseDto(findSchedule);
     }
 
+    @Transactional
     public ScheduleResponseDto update(Long id, String title, String contents, String password) {
         Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Does not exist id : " + id));
         Member writer = findSchedule.getMember();
-
         // 이제 정보를 새로 업데이트 하기. 새로운 업데이트 정보를 받았으면 객체를 수정하기.
         // 1. Password 로 작성자 인증
         if (!writer.getPassword().equals(password)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
-
         // 2. 조회한 객체 (findSchedule) 를 새로운 정보(String title, String contents)로 update 객체 데이터 변경하기
         findSchedule.updateSchedule(title, contents);
-
         // 3. 수정한 객체 repository 로 update 하기
         scheduleRepository.save(findSchedule);
-
         return new ScheduleResponseDto(findSchedule);
     }
 
@@ -75,9 +73,7 @@ public class ScheduleService {
         Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Does not exist id : " + id));
-
         Member writer = findSchedule.getMember();
-
         if (!writer.getPassword().equals(password)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
