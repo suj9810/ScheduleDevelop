@@ -1,9 +1,13 @@
 package com.example.scheduledevelop.controller;
 
+import com.example.scheduledevelop.common.Const;
 import com.example.scheduledevelop.dto.CreateScheduleRequestDto;
+import com.example.scheduledevelop.dto.MemberResponseDto;
 import com.example.scheduledevelop.dto.ScheduleResponseDto;
 import com.example.scheduledevelop.dto.UpdateScheduleRequestDto;
 import com.example.scheduledevelop.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +24,13 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> save(@RequestBody CreateScheduleRequestDto requestDto) {
+    public ResponseEntity<ScheduleResponseDto> save(@RequestBody CreateScheduleRequestDto requestDto, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        MemberResponseDto memberResponseDto = (MemberResponseDto) session.getAttribute(Const.LOGIN_USER);
+
         ScheduleResponseDto scheduleResponseDto =
-                scheduleService.save(requestDto.getTitle(), requestDto.getContents(), requestDto.getEmail());
+                scheduleService.save(requestDto.getTitle(), requestDto.getContents(), memberResponseDto.getId());
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
     }
 
@@ -41,17 +49,24 @@ public class ScheduleController {
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> update(
             @PathVariable Long id,
-            @RequestBody UpdateScheduleRequestDto requestDto
+            @RequestBody UpdateScheduleRequestDto requestDto,
+            HttpServletRequest request
     ) {
-        scheduleService.update(id, requestDto.getTitle(), requestDto.getContents(), requestDto.getPassword());
+        HttpSession session = request.getSession();
+
+        MemberResponseDto memberResponseDto = (MemberResponseDto) session.getAttribute(Const.LOGIN_USER);
+        scheduleService.update(id, requestDto.getTitle(), requestDto.getContents(), memberResponseDto.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id,
-        @RequestBody UpdateScheduleRequestDto requestDto
+                                       HttpServletRequest request
     ) {
-        scheduleService.delete(id, requestDto.getPassword());
+        HttpSession session = request.getSession();
+        MemberResponseDto memberResponseDto = (MemberResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        scheduleService.delete(id, memberResponseDto.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

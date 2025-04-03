@@ -22,11 +22,12 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
 
-    public ScheduleResponseDto save(String title, String contents, String email) {
+    public ScheduleResponseDto save(String title, String contents, Long memberId) {
 
-        Member findMember = memberRepository.findMemberByEmail(email).orElseThrow(() ->
+
+        Member findMember = memberRepository.findById(memberId).orElseThrow(() ->
                 new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Does not exist email : " + email));
+                        HttpStatus.NOT_FOUND, "Does not exist id : " + memberId));
 
         Schedule schedule = new Schedule(title, contents);
         schedule.setMember(findMember);
@@ -52,15 +53,15 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponseDto update(Long id, String title, String contents, String password) {
+    public ScheduleResponseDto update(Long id, String title, String contents, Long memberId) {
         Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Does not exist id : " + id));
         Member writer = findSchedule.getMember();
         // 이제 정보를 새로 업데이트 하기. 새로운 업데이트 정보를 받았으면 객체를 수정하기.
         // 1. Password 로 작성자 인증
-        if (!writer.getPassword().equals(password)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        if (!writer.getId().equals(memberId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자 정보가 일치하지 않습니다.");
         }
         // 2. 조회한 객체 (findSchedule) 를 새로운 정보(String title, String contents)로 update 객체 데이터 변경하기
         findSchedule.updateSchedule(title, contents);
@@ -69,13 +70,13 @@ public class ScheduleService {
         return new ScheduleResponseDto(findSchedule);
     }
 
-    public void delete(Long id, String password) {
+    public void delete(Long id, Long memberId) {
         Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Does not exist id : " + id));
         Member writer = findSchedule.getMember();
-        if (!writer.getPassword().equals(password)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        if (!writer.getId().equals(memberId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자 정보가 일치하지 않습니다.");
         }
         scheduleRepository.delete(findSchedule);
     }

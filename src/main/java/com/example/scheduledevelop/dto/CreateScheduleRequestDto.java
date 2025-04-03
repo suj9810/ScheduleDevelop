@@ -9,12 +9,9 @@ public class CreateScheduleRequestDto {
 
     private final String contents;
 
-    private final String email;
-
-    public CreateScheduleRequestDto(String title, String contents, String email) {
+    public CreateScheduleRequestDto(String title, String contents) {
         this.title = title;
         this.contents = contents;
-        this.email = email;
     }
 
 }

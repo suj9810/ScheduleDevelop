@@ -38,7 +38,7 @@ public class MemberController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
-            @RequestBody UpdateScheduleRequestDto requestDto
+            @RequestBody UpdateMemberRequestDto requestDto
     ) {
         memberService.delete(id, requestDto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);

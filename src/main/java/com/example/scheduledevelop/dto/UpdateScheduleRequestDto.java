@@ -8,6 +8,4 @@ public class UpdateScheduleRequestDto {
     private String title;
 
     private String contents;
-
-    private String password;
 }
