@@ -1,9 +1,6 @@
 package com.example.scheduledevelop.controller;
 
-import com.example.scheduledevelop.dto.MemberResponseDto;
-import com.example.scheduledevelop.dto.SignUpRequestDto;
-import com.example.scheduledevelop.dto.SignUpResponseDto;
-import com.example.scheduledevelop.dto.UpdateMemberRequestDto;
+import com.example.scheduledevelop.dto.*;
 import com.example.scheduledevelop.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +32,15 @@ public class MemberController {
             @RequestBody UpdateMemberRequestDto requestDto
     ) {
         memberService.update(id, requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @RequestBody UpdateScheduleRequestDto requestDto
+    ) {
+        memberService.delete(id, requestDto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

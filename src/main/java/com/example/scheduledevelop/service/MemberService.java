@@ -47,4 +47,14 @@ public class MemberService {
 
         return new MemberResponseDto(findMember);
     }
+
+    public void delete(Long id, String password) {
+        Member findMember = memberRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Does not exist id : " + id));
+        if (!findMember.getPassword().equals(password)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+        memberRepository.delete(findMember);
+    }
 }
