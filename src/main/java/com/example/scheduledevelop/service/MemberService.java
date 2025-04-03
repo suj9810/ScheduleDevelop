@@ -1,9 +1,11 @@
 package com.example.scheduledevelop.service;
 
+import com.example.scheduledevelop.dto.LoginRequestDto;
 import com.example.scheduledevelop.dto.MemberResponseDto;
 import com.example.scheduledevelop.dto.SignUpResponseDto;
 import com.example.scheduledevelop.entity.Member;
 import com.example.scheduledevelop.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,5 +58,18 @@ public class MemberService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
         memberRepository.delete(findMember);
+    }
+
+    public boolean validateUser(String email, String password, HttpServletRequest request) {
+
+        Optional<Member> member = memberRepository.findMemberByEmailAndPassword(email, password);
+
+        if (member.isPresent()) {
+            request.getSession(true).setAttribute("loginUser", member.get());
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }
