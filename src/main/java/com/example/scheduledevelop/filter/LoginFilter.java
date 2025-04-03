@@ -1,5 +1,6 @@
 package com.example.scheduledevelop.filter;
 
+import com.example.scheduledevelop.common.Const;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +13,7 @@ import java.io.IOException;
 @Slf4j
 public class LoginFilter implements Filter {
 
-    private static final String[] WHITE_LIST = {"/", "/user/signup", "/login", "/logout","/user"};
+    private static final String[] WHITE_LIST = {"/", "/user/signup", "/login", "/logout"};
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -23,7 +24,7 @@ public class LoginFilter implements Filter {
 
         if (!isWhiteList(requestURI)) {
             HttpSession session = httpRequest.getSession(false);
-            if (session == null || session.getAttribute("loginUser") == null) {
+            if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
                 throw new RuntimeException("로그인 해주세요.");
             }
             log.info("로그인에 성공했습니다.");

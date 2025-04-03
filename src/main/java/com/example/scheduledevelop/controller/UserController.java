@@ -1,10 +1,12 @@
 package com.example.scheduledevelop.controller;
 
 
+import com.example.scheduledevelop.common.Const;
 import com.example.scheduledevelop.dto.LoginRequestDto;
-import com.example.scheduledevelop.entity.Member;
-import com.example.scheduledevelop.service.MemberService;
+import com.example.scheduledevelop.dto.MemberResponseDto;
+import com.example.scheduledevelop.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,23 +15,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/login")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final MemberService memberService;
+    private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<MemberResponseDto> login(@RequestBody LoginRequestDto request, HttpServletRequest httpServletRequest) {
 
-        boolean isValidUser = memberService.validateUser(request.getEmail(), request.getPassword(), httpServletRequest);
+        MemberResponseDto validUser = userService.validateUser(request.getEmail(), request.getPassword());
+        HttpSession session = httpServletRequest.getSession(); // session을 가져온다.
+        session.setAttribute(Const.LOGIN_USER, validUser); // session 에 데이터를 저장한다.
 
-        if (isValidUser) {
-            return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("로그인 실패", HttpStatus.UNAUTHORIZED);
-        }
+        return new ResponseEntity<>(validUser, HttpStatus.OK);
 
     }
 }
