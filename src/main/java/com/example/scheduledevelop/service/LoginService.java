@@ -2,8 +2,7 @@ package com.example.scheduledevelop.service;
 
 import com.example.scheduledevelop.dto.MemberResponseDto;
 import com.example.scheduledevelop.entity.Member;
-import com.example.scheduledevelop.repository.UserRository;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.scheduledevelop.repository.LoginRository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,9 +11,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class LoginService {
 
-    private final UserRository userRository;
+    private final LoginRository userRository;
 
     public MemberResponseDto validateUser(String email, String password) {
 

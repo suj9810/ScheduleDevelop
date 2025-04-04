@@ -4,7 +4,7 @@ package com.example.scheduledevelop.controller;
 import com.example.scheduledevelop.common.Const;
 import com.example.scheduledevelop.dto.LoginRequestDto;
 import com.example.scheduledevelop.dto.MemberResponseDto;
-import com.example.scheduledevelop.service.UserService;
+import com.example.scheduledevelop.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
-public class UserController {
+public class LoginController {
 
-    private final UserService userService;
+    private final LoginService userService;
 
     @PostMapping
     public ResponseEntity<MemberResponseDto> login(@RequestBody LoginRequestDto request, HttpServletRequest httpServletRequest) {
