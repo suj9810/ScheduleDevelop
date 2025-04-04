@@ -2,7 +2,7 @@ package com.example.scheduledevelop.service;
 
 import com.example.scheduledevelop.dto.MemberResponseDto;
 import com.example.scheduledevelop.entity.Member;
-import com.example.scheduledevelop.repository.LoginRository;
+import com.example.scheduledevelop.repository.LoginRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final LoginRository userRository;
+    private final LoginRepository loginRepository;
 
     public MemberResponseDto validateUser(String email, String password) {
 
         // step1. 해당 email 로 find 해서 Member가 있나 없으면 Exception
-        Member member = userRository.findMemberByEmail(email)
+        Member member = loginRepository.findMemberByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 일치하지 않습니다."));
 
         // step2. password 비교
